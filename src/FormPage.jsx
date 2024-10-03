@@ -1,7 +1,7 @@
 import { Select, Form, Input, Button, Checkbox } from "antd"
 import { useForm, Controller, useFieldArray } from "react-hook-form"
 import axios from "axios"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useMutation } from "@tanstack/react-query"
 
 const userData = [
     {
@@ -18,25 +18,37 @@ const userData = [
     },
 ]
 
-const onSubmitFn = (data) =>{
-    console.log(data);   
-}
+
 
 function FormPage(){
     const {handleSubmit, control} = useForm()
     // const {fields} = useFieldArray()
 
-    async function postData(){
-        return await axios.post('https://jsonplaceholder.typicode.com/posts'), userData
+    async function getData(){
+        return await axios.get('https://jsonplaceholder.typicode.com/posts')
     }
 
     const {data, isLoading} = useQuery({
         queryKey: ["usersData"],
-        queryFn: postData,
+        queryFn: getData,
     })
-
     console.log(data);
+
+    async function postData() {
+        return await axios.post("https://jsonplaceholder.typicode.com/posts"), userData
+    }
+
+    const {data: dataForPost, mutate} = useMutation(
+        {
+            mutationFn: postData
+        }
+    )
+    console.log(dataForPost);
     
+    const onSubmitFn = (data) =>{ 
+        mutate(data)
+    }
+
     return(
         <>
         <Form>
@@ -62,12 +74,6 @@ function FormPage(){
                 <Input {...field} placeholder="Body"/>
             )}/>
 
-            <Controller
-            name="check"
-            control={control}
-            render={({ field }) =>(
-                <Checkbox {...field}>Check</Checkbox>
-            )}/>
         </Form>
 
         <Button onClick={handleSubmit(onSubmitFn)}> Create </Button>
