@@ -34,8 +34,8 @@ function FormPage(){
     })
     console.log(data);
 
-    async function postData() {
-        return await axios.post("https://jsonplaceholder.typicode.com/posts"), userData
+    async function postData(data) {
+        return await axios.post("https://jsonplaceholder.typicode.com/posts"), data
     }
 
     const {data: dataForPost, mutate} = useMutation(
@@ -51,7 +51,7 @@ function FormPage(){
 
     return(
         <>
-        <Form>
+        <Form style={{display:'flex', flexDirection:'column', gap:'10px'}}> 
             <Controller
             name="userID"
             control={control}
@@ -76,7 +76,7 @@ function FormPage(){
 
         </Form>
 
-        <Button onClick={handleSubmit(onSubmitFn)}> Create </Button>
+        <Button onClick={handleSubmit(onSubmitFn)} type="primary" style={{margin:'10px 0'}}> Create </Button>
         </>
     )
 }
